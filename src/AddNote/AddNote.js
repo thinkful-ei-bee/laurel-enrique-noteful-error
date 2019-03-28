@@ -5,6 +5,13 @@ import config from '../config'
 import './AddNote.css'
 
 export default class AddNote extends Component {
+  state ={
+    name: '', nameValid: false,
+    content: '', contentValid: false,
+    folder: '', folderValid: false,
+    formValid: false,
+    validationMessages: {}
+  };
   static defaultProps = {
     history: {
       push: () => { }
@@ -41,6 +48,19 @@ export default class AddNote extends Component {
       })
   }
 
+  setNoteName = name => {
+    this.setState({name}, () => this.validateName(name));
+  };
+  validateName = name => {
+   //name is a string for whatever the users types in that field
+   //based on name, is there a problem or not? if there is, whats a good message
+   //update the state with the message we did or didnt decide to 
+  } 
+  validateForm = () => {
+    this.setState({
+      formValid: this.state.nameValid && this.state.contentValid 
+    });
+  }
   render() {
     const { folders=[] } = this.context
     return (
