@@ -5,6 +5,12 @@ import config from '../config'
 import './AddNote.css'
 
 export default class AddNote extends Component {
+  constructor(props){
+    super(props);
+    this.nameInput= React.createRef();
+    this.contentInput=React.createRef();
+  }  
+  
   state ={
     name: '', nameValid: false,
     content: '', contentValid: false,
@@ -48,17 +54,34 @@ export default class AddNote extends Component {
       })
   }
 
-  setNoteName = name => {
-    this.setState({name}, () => this.validateName(name));
+  setNote = (name, content) => {
+    console.log(name);
+    this.setState({name, content}, () => this.validateNote(name, content));
   };
-  validateName = name => {
-   //name is a string for whatever the users types in that field
-   //based on name, is there a problem or not? if there is, whats a good message
-   //update the state with the message we did or didnt decide to 
+  validateNote = (name, content) => {
+  
+    const validationMessages = {...this.state.validationMessages};
+    let nameValid = true;
+    let contentValid= true;
+    if (name.length < 2){
+      validationMessages.name = 'Name must be at least two character long.';
+      nameValid = false;
+      console.log(' name error if less than two')
+      throw Error;
+      //error throwers go here  //error throwers go here and set up error boundaries below
+    } 
+    if (content.length < 2){
+      validationMessages.content = 'Content must be at least two character long.';
+      contentValid = false;
+      console.log(' content error if less than two')
+      throw Error
+      //error throwers go here and set up error boundaries below
+    }
+    this.setState({validationMessages, nameValid, contentValid}, this.validateForm);
   } 
   validateForm = () => {
     this.setState({
-      formValid: this.state.nameValid && this.state.contentValid 
+      formValid: this.state.nameValid && this.state.contentValid && this.state.contentValid
     });
   }
   render() {
@@ -66,18 +89,18 @@ export default class AddNote extends Component {
     return (
       <section className='AddNote'>
         <h2>Create a note</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
+        <NotefulForm onSubmit={this.handleSubmit} >
           <div className='field'>
             <label htmlFor='note-name-input'>
               Name
             </label>
-            <input type='text' id='note-name-input' name='note-name' />
+            <input type='text' id='note-name-input' name='note-name'ref={this.nameInput} />
           </div>
           <div className='field'>
             <label htmlFor='note-content-input'>
               Content
             </label>
-            <textarea id='note-content-input' name='note-content' />
+            <textarea id='note-content-input' name='note-content' ref={this.contentInput}/>
           </div>
           <div className='field'>
             <label htmlFor='note-folder-select'>
@@ -93,7 +116,7 @@ export default class AddNote extends Component {
             </select>
           </div>
           <div className='buttons'>
-            <button type='submit'>
+            <button type='submit'  onClick={(e)=>this.setNote(this.nameInput.current.value, this.contentInput.current.value)}>
               Add note
             </button>
           </div>
