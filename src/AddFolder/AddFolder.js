@@ -5,13 +5,48 @@ import config from '../config'
 import './AddFolder.css'
 
 export default class AddFolder extends Component {
+  constructor(props){
+    super(props);
+    this.folderInput= React.createRef();
+   
+  }  
   static defaultProps = {
     history: {
       push: () => { }
     },
   }
+  state ={
+    name: '', folderValid: false,
+ 
+    formValid: false,
+    validationMessages: {}
+  };
+ 
   static contextType = ApiContext;
+  setFolder = (name) => {
+    console.log(name);
+    this.setState({name}, () => this.validateFolder(name));
+  };
+  validateFolder = (name) => {
+  
+    const validationMessages = {...this.state.validationMessages};
+    let folderValid = true;
+   
+    if (name.length < 4){
+      validationMessages.name = 'Name must be at least 3 character long.';
+      folderValid = false;
+      console.log(' folder error if less than two')
+      throw Error;
+      //error throwers go here  //error throwers go here and set up error boundaries below
+    } 
 
+    this.setState({validationMessages, folderValid, }, this.validateForm);
+  } 
+  validateForm = () => {
+    this.setState({
+      formValid: this.state.folderValid 
+    });
+  }
   handleSubmit = e => {
     e.preventDefault()
     const folder = {
@@ -47,10 +82,10 @@ export default class AddFolder extends Component {
             <label htmlFor='folder-name-input'>
               Name
             </label>
-            <input type='text' id='folder-name-input' name='folder-name' />
+            <input type='text' id='folder-name-input' name='folder-name' ref={this.folderInput}/>
           </div>
           <div className='buttons'>
-            <button type='submit'>
+            <button type='submit' onClick={(e)=>this.setFolder(this.folderInput.current.value)}>
               Add folder
             </button>
           </div>

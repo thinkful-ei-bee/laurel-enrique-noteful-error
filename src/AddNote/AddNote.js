@@ -9,6 +9,7 @@ export default class AddNote extends Component {
     super(props);
     this.nameInput= React.createRef();
     this.contentInput=React.createRef();
+    this.folderInput=React.createRef();
   }  
   
   state ={
@@ -54,30 +55,41 @@ export default class AddNote extends Component {
       })
   }
 
-  setNote = (name, content) => {
-    console.log(name);
-    this.setState({name, content}, () => this.validateNote(name, content));
+  setNote = (name, content, folder) => {
+    console.log(folder);
+    this.setState({name, content, folder}, () => this.validateNote(name, content));
   };
-  validateNote = (name, content) => {
+  validateNote = (name, content, folder) => {
   
     const validationMessages = {...this.state.validationMessages};
     let nameValid = true;
     let contentValid= true;
+    let folderValid= true;
+
     if (name.length < 2){
       validationMessages.name = 'Name must be at least two character long.';
       nameValid = false;
       console.log(' name error if less than two')
-      throw Error;
-      //error throwers go here  //error throwers go here and set up error boundaries below
-    } 
-    if (content.length < 2){
+      throw Error
+     
+    } else if (content.length < 2){
       validationMessages.content = 'Content must be at least two character long.';
       contentValid = false;
       console.log(' content error if less than two')
       throw Error
-      //error throwers go here and set up error boundaries below
+      
+    } else if (folder === null){ /// trying to find a way to access the value of inputfolder to finish validation
+      validationMessages.folder = 'must select an available folder';
+      folderValid= false;
+  
+      console.log(' folder error if null')
+      
+      throw Error
+      
+    }else{
+
+      this.setState({validationMessages, nameValid, contentValid, folderValid}, this.validateForm);
     }
-    this.setState({validationMessages, nameValid, contentValid}, this.validateForm);
   } 
   validateForm = () => {
     this.setState({
@@ -94,19 +106,19 @@ export default class AddNote extends Component {
             <label htmlFor='note-name-input'>
               Name
             </label>
-            <input type='text' id='note-name-input' name='note-name'ref={this.nameInput} />
+            <input type='text' id='note-name-input' name='note-name'ref={this.nameInput} required/>
           </div>
           <div className='field'>
             <label htmlFor='note-content-input'>
               Content
             </label>
-            <textarea id='note-content-input' name='note-content' ref={this.contentInput}/>
+            <textarea id='note-content-input' name='note-content' ref={this.contentInput} />
           </div>
           <div className='field'>
             <label htmlFor='note-folder-select'>
               Folder
             </label>
-            <select id='note-folder-select' name='note-folder-id'>
+            <select id='note-folder-select' name='note-folder-id'ref={this.folderInput} defaultValue={null}>
               <option value={null}>...</option>
               {folders.map(folder =>
                 <option key={folder.id} value={folder.id}>
@@ -116,7 +128,7 @@ export default class AddNote extends Component {
             </select>
           </div>
           <div className='buttons'>
-            <button type='submit'  onClick={(e)=>this.setNote(this.nameInput.current.value, this.contentInput.current.value)}>
+            <button type='submit'  onClick={(e)=>this.setNote(this.nameInput.current.value, this.contentInput.current.value, this.folderInput.current.value)}>
               Add note
             </button>
           </div>
