@@ -10,6 +10,8 @@ import AddNote from '../AddNote/AddNote'
 import ApiContext from '../ApiContext'
 import config from '../config'
 import './App.css'
+import NotefulFormError from "../errors/NotefulFormError";
+import NotefulForm from '../NotefulForm/NotefulForm';
 
 class App extends Component {
   state = {
@@ -130,9 +132,11 @@ class App extends Component {
     return (
       <ApiContext.Provider value={value}>
         <div className='App'>
+      <NotefulFormError>
           <nav className='App__nav'>
             {this.renderNavRoutes()}
           </nav>
+          </NotefulFormError>
           <header className='App__header'>
             <h1>
               <Link to='/'>Noteful</Link>
@@ -140,10 +144,13 @@ class App extends Component {
               <FontAwesomeIcon icon='check-double' />
             </h1>
           </header>
+          <NotefulFormError>
           <main className='App__main'>
             {this.renderMainRoutes()}
           </main>
+      </NotefulFormError>
         </div>
+
       </ApiContext.Provider>
     )
   }

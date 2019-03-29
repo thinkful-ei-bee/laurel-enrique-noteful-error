@@ -1,13 +1,14 @@
 import React from 'react';
 
-export default class ErrorPage extends React.Component {
-    state = {error: null};
+export default class NotefulFormError extends React.Component {
+    state = {hasError: false};
     // Static method
     static getDerivedStateFromError(error) {
+        return {hasError:true}
         // Called when an error is thrown in a child component
-        console.error(error);
+       
         // Store the error in the state
-        return {error};
+        
     }
     render() {
         // If there was an error, show an error page

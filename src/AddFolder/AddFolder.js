@@ -38,7 +38,12 @@ export default class AddFolder extends Component {
       console.log(' folder error if less than two')
       throw Error;
       //error throwers go here  //error throwers go here and set up error boundaries below
-    } 
+    } else if (name.length > 15){
+      validationMessages.name = 'Name must be no more than 15 characters long.';
+      folderValid = false;
+      console.log(' folder error if more than 15')
+      throw Error;
+    }
 
     this.setState({validationMessages, folderValid, }, this.validateForm);
   } 
